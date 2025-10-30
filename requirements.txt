@@ -1,0 +1,13 @@
+# Para o servidor web
+Flask
+Flask-CORS
+gunicorn
+
+# Para ler o arquivo .env
+python-dotenv
+
+# Para a IA (Gemini)
+google-generativeai
+
+# Para a Busca (Google Custom Search API)
+google-api-python-client

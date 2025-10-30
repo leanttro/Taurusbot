@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAURUSbot | A Casa Oficial da Duquesa</title>
+    
+    <!-- Google Fonts: Inter e Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (Ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tone.js para reprodução de áudio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        /* * CSS - TAURUSbot Landing Page
+         * Direção: Minimalismo Premium (Apple/Tesla) + Identidade TAURUS
+         * Paleta:
+         * Fundo: #0a0a0a
+         * Texto: #FAFAFA
+         * Destaque: #E60000
+         */
+
+        /* 1. Reset Básico e Globais */
+        :root {
+            --bg-color: #0a0a0a;
+            --dark-gray: #111111;
+            --text-color: #FAFAFA;
+            --accent-color: #E60000;
+            --correct-color: #28a745;
+            --wrong-color: #dc3545;
+            --font-body: 'Inter', sans-serif;
+            --font-heading: 'Montserrat', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 100%;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-color); /* Fallback */
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative; /* Necessário para o slideshow de fundo */
+        }
+        
+        /* NOVO: Slideshow de Fundo da Página */
+        #page-background-slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -2; /* Atrás de todo o conteúdo */
+            overflow: hidden;
+            background-color: var(--bg-color);
+        }
+
+        #page-background-slideshow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 10, 10, 0.75); /* Overlay escura */
+            z-index: 1; /* Sobrepõe as imagens */
+        }
+
+        .slide-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            opacity: 0;
+            z-index: 0;
+            /* Duração total de 30s (5 imagens * 6s cada) */
+            animation-duration: 30s; 
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+
+        /* 5 Imagens com 5 Animações Diferentes (Total 30s) */
+        .slide-image:nth-child(1) {
+            background-image: url('fundo1.jpg'); /* CORRIGIDO */
+            animation-name: anim-fade;
+            animation-delay: 0s;
+        }
+        .slide-image:nth-child(2) {
+            background-image: url('fundo2.jpg');
+            animation-name: anim-kenburnsTop;
+            animation-delay: 6s; /* Começa aos 6s */
+        }
+        .slide-image:nth-child(3) {
+            background-image: url('fundo3.jpg');
+            animation-name: anim-slideLeft;
+            animation-delay: 12s; /* Começa aos 12s */
+        }
+        .slide-image:nth-child(4) {
+            background-image: url('fundo4.jpg');
+            animation-name: anim-kenburnsBottom;
+            animation-delay: 18s; /* Começa aos 18s */
+        }
+        .slide-image:nth-child(5) {
+            background-image: url('fundo5.jpg');
+            animation-name: anim-zoomOut;
+            animation-delay: 24s; /* Começa aos 24s */
+        }
+
+        /* Keyframes das Animações (Cada animação dura 6s) */
+        /* Cada animação tem 20% do tempo total (6s de 30s) */
+        @keyframes anim-fade {
+            0% { opacity: 0; }
+            3.33% { opacity: 1; }  /* Entra (1s / 30s) */
+            16.66% { opacity: 1; } /* Fica (4s / 30s) */
+            20% { opacity: 0; }    /* Sai (1s / 30s) */
+            100% { opacity: 0; }
+        }
+        
+        @keyframes anim-kenburnsTop {
+            0% { opacity: 0; }
+            20% { opacity: 0; transform: scale(1) translateY(0); } /* Início no delay */
+            23.33% { opacity: 1; transform: scale(1) translateY(0); } /* Entrada */
+            36.66% { opacity: 1; transform: scale(1.1) translateY(-10px); } /* Fica + Animação */
+            40% { opacity: 0; transform: scale(1.1) translateY(-10px); } /* Saída */
+            100% { opacity: 0; }
+        }
+        
+        @keyframes anim-slideLeft {
+            0% { opacity: 0; }
+            40% { opacity: 0; transform: translateX(50px) scale(1.1); }
+            43.33% { opacity: 1; transform: translateX(0) scale(1); }
+            56.66% { opacity: 1; transform: translateX(0) scale(1); }
+            60% { opacity: 0; transform: translateX(-50px) scale(1.1); }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes anim-kenburnsBottom {
+            0% { opacity: 0; }
+            60% { opacity: 0; transform: scale(1) translateY(0); }
+            63.33% { opacity: 1; transform: scale(1) translateY(0); }
+            76.66% { opacity: 1; transform: scale(1.1) translateY(10px); }
+            80% { opacity: 0; transform: scale(1.1) translateY(10px); }
+            100% { opacity: 0; }
+        }
+
+        @keyframes anim-zoomOut {
+            0% { opacity: 0; }
+            80% { opacity: 0; transform: scale(1.2); }
+            83.33% { opacity: 1; transform: scale(1.1); }
+            96.66% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.95); }
+        }
+
+
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            line-height: 1.2;
+            font-weight: 800;
+        }
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        
+        /* Garante que o conteúdo fique sobre o slideshow */
+        header, main, footer {
+            position: relative;
+            z-index: 10;
+        }
+
+        section {
+            padding: 4rem 0;
+            overflow: hidden; /* Para o efeito de reveal */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Título de Seção Padrão */
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        /* CORREÇÃO AQUI: Aplica o minúsculo no span dentro do h2 */
+        .section-title span {
+            text-transform: lowercase;
+            color: var(--accent-color);
+        }
+
+        /* Classes de Animação (Scroll Reveal) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 2. Cabeçalho (<header>) */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.2rem 5%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        header.scrolled {
+            background: var(--bg-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        header .logo {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-color); /* TAURUS em branco */
+        }
+        
+        header .logo span {
+            color: var(--accent-color); /* bot em vermelho */
+            text-transform: lowercase; /* Garante minúsculas para 'bot' */
+        }
+
+        header nav ul {
+            list-style: none;
+            display: none; /* Escondido por padrão (mobile-first) */
+            gap: 1.5rem;
+        }
+
+        header nav a {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 3. Seção Hero (MODIFICADA) */
+        #hero {
+            height: 100vh;
+            min-height: 700px; /* Aumentei a altura mínima para caber a imagem e o texto */
+            position: relative;
+            display: flex;
+            /* MUDADO para column para empilhar imagem e texto */
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+        }
+
+        /* REMOVIDO: #hero::before (imagem de fundo) */
+
+        /* NOVA Imagem Hero (AJUSTADA) */
+        .hero-image {
+            width: 90%;
+            max-width: 280px; /* DIMINUÍDO (antes era 450px) */
+            margin-bottom: 1.5rem; /* Diminuído */
+            animation: spin 25s linear infinite; /* Animação de rotação (ajustada) */
+            /* Opcional: border-radius: 50%; */
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Conteúdo do Hero (texto abaixo da imagem) */
+        #hero .hero-content {
+            text-align: center;
+        }
+
+        #hero h1 {
+            font-size: clamp(3rem, 10vw, 6rem); /* DIMINUÍDO (antes era 8rem) */
+            font-weight: 900;
+            color: #FFFFFF; /* Branco puro para impacto máximo */
+            margin: 0;
+        }
+
+        #hero p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem); /* DIMINUÍDO (antes era 1.5rem) */
+            color: var(--text-color);
+            margin-top: 0.5rem;
+        }
+        
+        #hero .cta-bot {
+            display: inline-block;
+            background: var(--accent-color);
+            color: var(--text-color);
+            padding: 0.7rem 2.2rem; /* DIMINUÍDO */
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 0.9rem; /* DIMINUÍDO */
+            text-transform: uppercase;
+            border-radius: 4px;
+            margin-top: 1.5rem; /* DIMINUÍDO */
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        #hero .cta-bot:hover {
+            transform: scale(1.05);
+            background-color: #ff1a1a;
+            color: #fff;
+        }
+        
+        /* 4. NOVA SEÇÃO BIO (Fundo Transparente) */
+        #bio {
+            /* background-color: var(--dark-gray); */ /* REMOVIDO para transparência */
+            padding: 5rem 0;
+            position: relative; /* Garante que o z-index funcione */
+            z-index: 5; /* Garante que fique acima do fundo */
+        }
+        
+        #bio .bio-title {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            text-align: center;
+            color: var(--text-color);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            text-transform: none; /* Título não é uppercase */
+        }
+        
+        .bio-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* 1 coluna no mobile */
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .bio-card {
+            background-color: var(--bg-color); /* MANTIDO fundo preto */
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .bio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .bio-card h3 {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .bio-card h3 i {
+            font-size: 1rem; /* Tamanho do ícone */
+        }
+
+        .bio-card p {
+            font-size: 0.95rem;
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        /* 5. Seção Agenda (#agenda) */
+        #agenda {
+            /* Adicionado padding extra para o view switcher */
+            padding-bottom: 4rem; 
+        }
+
+        /* --- INÍCIO DO NOVO CSS PARA AGENDA --- */
+
+        /* Container do Seletor de Visualização (Igual ao Feiras Livres) */
+        .view-switcher-container {
+            display: flex;
+            justify-content: flex-end;
+            max-width: 1100px;
+            width: 90%;
+            margin: 0 auto 20px auto;
+        }
+        .view-btn {
+            background-color: var(--dark-gray);
+            border: 1px solid #333;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .view-btn:first-of-type {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            border-right-width: 0.5px;
+        }
+        .view-btn:last-of-type {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border-left-width: 0.5px;
+        }
+        .view-btn.active {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Lista de Eventos (Container) */
+        #agenda .event-list {
+            list-style: none;
+            margin-top: 2rem;
+            padding: 0; /* Garante que a UL não tenha padding */
+        }
+
+        /* Layout em Grade (Padrão para Desktop) */
+        .event-list.results-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* 1 coluna no mobile */
+            gap: 1.5rem;
+        }
+        
+        /* Layout em Carrossel (Padrão para Mobile/Primeiro) */
+        .event-list.results-carousel {
+            display: flex;
+            overflow-x: auto; /* Permite scroll horizontal */
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding-bottom: 20px; /* Espaço para scrollbar no fundo */
+        }
+        
+        .event-list.results-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+        .event-list.results-carousel::-webkit-scrollbar-track {
+            background: #181818; 
+            border-radius: 10px;
+        }
+        .event-list.results-carousel::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 10px;
+        }
+        .event-list.results-carousel::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color); 
+        }
+
+        /* Item do Evento (Card) */
+        #agenda .event-item {
+            /* Modificado: Removido border-left para tirar o "quadrado" e aumentado o border-radius */
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.5rem;
+            background-color: var(--dark-gray); /* Fundo mais escuro */
+            border: 1px solid #222;
+            border-radius: 12px; /* Cantos mais arredondados */
+            margin-bottom: 0; /* Removido margin-bottom quando está na lista */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            flex-shrink: 0; /* Necessário para o carrossel */
+            width: 90%; /* Ocupa 90% no carrossel mobile */
+            max-width: 320px; /* Largura máxima para card no carrossel */
+            scroll-snap-align: start; /* Alinha o card no scroll */
+        }
+        
+        /* Ajuste do width e flex-grow para Grade (para que o item ocupe a largura total da UL) */
+        .event-list.results-grid .event-item {
+            width: 100%;
+            max-width: none;
+        }
+
+        #agenda .event-item:hover {
+            background-color: #1a1a1a;
+            border-color: var(--accent-color);
+        }
+        
+        /* Wrapper para nome e local */
+        #agenda .event-details {
+            flex: 1;
+            margin-top: 0.5rem;
+        }
+        #agenda .event-name {
+            margin: 0; /* Resetado */
+        }
+
+        /* Estilo do Botão de Ingresso */
+        .ticket-button {
+            display: inline-block;
+            background: var(--accent-color);
+            color: var(--text-color);
+            padding: 0.7rem 1.5rem;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            text-align: center;
+            border-radius: 4px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            flex-shrink: 0;
+            width: 100%; /* Ocupa 100% no mobile */
+        }
+        .ticket-button:hover {
+            transform: scale(1.02);
+            background-color: #ff1a1a;
+            color: #fff;
+        }
+        /* Botão Esgotado */
+        .ticket-button.sold-out {
+            background: #555;
+            color: #999;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+        .ticket-button.sold-out:hover {
+            transform: none;
+            background: #555;
+        }
+        /* Botão Desabilitado (link não encontrado) */
+        .ticket-button.disabled {
+            background: #333;
+            color: #777;
+            cursor: default;
+        }
+        .ticket-button.disabled:hover {
+            transform: none;
+            background: #333;
+        }
+        /* Evento Passado */
+        .event-item.past-event {
+            opacity: 0.5;
+            background: #0d0d0d;
+        }
+        .event-item.past-event:hover {
+            background: #0d0d0d;
+            border-color: #222;
+        }
+        /* --- FIM DO NOVO CSS PARA AGENDA --- */
+
+        #agenda .event-item span {
+            display: block;
+        }
+
+        #agenda .event-date {
+            font-family: var(--font-heading);
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            width: 150px;
+        }
+
+        #agenda .event-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0.5rem 0;
+        }
+
+        #agenda .event-location {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        /* 6. Seção Galeria/CLIPS (MODIFICADA) */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .gallery-grid .clip-link {
+            overflow: hidden;
+            display: block;
+            background: #1a1a1a; /* Fundo para placeholders */
+            position: relative;
+            border-radius: 8px; /* Cantos arredondados */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .gallery-grid .clip-link:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(230, 0, 0, 0.3);
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Proporção de vídeo */
+            object-fit: cover;
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        }
+
+        .gallery-grid .clip-link:hover img {
+            transform: scale(1.1);
+            opacity: 0.5;
+        }
+        
+        /* Ícone de Play (NOVO) */
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            font-size: 3.5rem;
+            color: var(--white);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            text-shadow: 0 0 15px rgba(0,0,0,0.7);
+        }
+        
+        .gallery-grid .clip-link:hover .play-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        /* Título do Clipe (Opcional, mas melhora a UI) */
+        .clip-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+            color: var(--white);
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-grid .clip-link:hover .clip-title {
+            opacity: 0;
+        }
+
+        /* 7. Seção "Conheça o Bot" (MODIFICADA) */
+        #sobre-bot {
+            /* Seção agora é mais simples */
+        }
+        
+        .bot-layout-centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza */
+            text-align: center; /* Centraliza texto */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .bot-text p {
+            font-size: 1.1rem;
+            color: #ccc;
+            line-height: 1.7;
+            max-width: 650px;
+            margin: 0 auto; /* Centraliza o parágrafo */
+        }
+        
+        /* 8. NOVA SEÇÃO DUQUIZ */
+        #duquiz {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 5;
+            /* Fundo transparente por padrão */
+        }
+
+        .quiz-container {
+            background-color: var(--bg-color); /* Fundo escuro para o card */
+            border: 1px solid #222;
+            border-top: 4px solid var(--accent-color);
+            border-radius: 8px;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        
+        .quiz-container h2 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Esconde/Mostra telas do quiz */
+        .quiz-screen {
+            display: none; /* Esconde todas as telas */
+        }
+        .quiz-screen.active {
+            display: block; /* Mostra a tela ativa */
+        }
+
+        #quiz-start p {
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+        
+        /* Botão genérico do quiz */
+        .quiz-btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: var(--text-color);
+            padding: 0.8rem 2.5rem;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1rem;
+            text-transform: uppercase;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .quiz-btn:hover {
+            transform: scale(1.05);
+            background-color: #ff1a1a;
+        }
+        
+        /* Tela da Pergunta */
+        #quiz-progress {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        #quiz-question-text {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-style: italic;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 1.5rem 0 2rem 0;
+            /* Aspas estilizadas */
+            quotes: "“" "”";
+        }
+        
+        #quiz-question-text::before {
+            content: open-quote;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-right: 5px;
+            line-height: 0;
+        }
+        #quiz-question-text::after {
+            content: close-quote;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-left: 5px;
+            line-height: 0;
+        }
+
+        #quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-btn {
+            background-color: var(--dark-gray);
+            border: 2px solid #333;
+            color: var(--text-color);
+            padding: 1rem;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:not([disabled]):hover {
+            border-color: var(--accent-color);
+            background-color: #222;
+        }
+        
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        /* Feedback de Resposta */
+        .option-btn.correct {
+            background-color: var(--correct-color);
+            border-color: #208035;
+            color: #fff;
+        }
+        
+        .option-btn.wrong {
+            background-color: var(--wrong-color);
+            border-color: #b32a38;
+            color: #fff;
+        }
+        
+        #quiz-feedback {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: none; /* Começa escondido */
+        }
+        
+        #quiz-feedback.correct {
+            color: var(--correct-color);
+        }
+        
+        #quiz-feedback.wrong {
+            color: var(--wrong-color);
+        }
+
+        #quiz-next-btn {
+            display: none; /* Começa escondido */
+        }
+        
+        /* Tela de Resultados */
+        #quiz-results p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+        }
+        
+        #quiz-score {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 2rem;
+        }
+
+
+        /* 9. Seção Redes Sociais (#redes) */
+        #redes {
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .social-links a {
+            font-size: 1.8rem;
+            margin: 0 1.2rem;
+            color: #777;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        /* 10. Rodapé (<footer>) */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: #000;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 2rem;
+        }
+        
+        /* Link do WhatsApp no Rodapé */
+        footer .dev-link {
+            color: var(--accent-color); /* Destaque no nome */
+            font-weight: 700;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        
+        footer .dev-link:hover {
+            color: #ff1a1a;
+            text-shadow: 0 0 10px rgba(230, 0, 0, 0.5);
+        }
+        
+        /* 11. Floating Chatbot (AGORA COM PREVIEW DE CHAT) */
+        .floating-chatbot {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            left: 15px; /* Adicionado para dar espaço no mobile */
+            z-index: 9999;
+        }
+
+        .chatbot-preview-button {
+            width: 100%; /* Ocupa o espaço definido pelo pai */
+            max-width: 300px; /* Largura máxima */
+            margin-left: auto; /* Alinha à direita em telas maiores */
+            margin-right: 0;
+            background-color: var(--dark-gray);
+            border: 1px solid rgba(230, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(230, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite; /* Reutilizando a animação */
+            /* Garante que esteja visível */
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .chatbot-preview-button:hover {
+            transform: scale(1.03); /* Leve scale */
+            box-shadow: 0 12px 35px rgba(230, 0, 0, 0.6);
+        }
+        
+        .chatbot-preview-button.active {
+            /* Esconde o botão de preview quando o chat principal está ativo */
+            opacity: 0;
+            transform: scale(0.9);
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .preview-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .preview-info strong {
+            font-family: var(--font-body);
+            font-weight: 700;
+            color: var(--white);
+            font-size: 0.9rem;
+        }
+
+        .preview-info span {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .preview-message-bubble {
+            background-color: rgba(230, 0, 0, 0.15);
+            border-left: 3px solid var(--red);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #ddd;
+        }
+
+        .preview-message-bubble #preview-message-text {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 8px 25px rgba(230, 0, 0, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 35px rgba(230, 0, 0, 0.7);
+            }
+        }
+
+        /* Janela Principal do Chatbot (Modal) */
+        .chatbot-window {
+            position: fixed;
+            bottom: 15px; /* Alinha com o botão */
+            right: 15px; /* Alinha com o botão */
+            left: 15px; /* Alinha com o botão */
+            width: calc(100% - 30px); /* Ocupa a largura no mobile */
+            max-width: 400px; /* Largura máxima */
+            height: 70vh; /* Altura boa para mobile */
+            max-height: 550px; /* Altura máxima */
+            background-color: var(--dark-gray);
+            border: 1px solid rgba(230, 0, 0, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            display: none; /* Começa escondido */
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9998;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-window.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, var(--accent-color), #FF4444);
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .chatbot-header-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .chatbot-header-info h3 {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.2rem;
+            color: var(--white);
+            text-transform: uppercase; /* TAURUS em uppercase */
+        }
+
+        .chatbot-header-info p {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            color: var(--white);
+        }
+
+        .chatbot-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .chatbot-close:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background-color: var(--bg-color); /* Fundo do chat */
+        }
+
+        .chatbot-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 0.8rem;
+            max-width: 90%;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+        
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse; /* Inverte a ordem */
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            color: var(--white);
+        }
+
+        .message.bot .message-avatar {
+             background: var(--accent-color);
+        }
+
+        .message.user .message-avatar {
+             background-color: #333;
+        }
+
+        .message-content {
+            max-width: calc(100% - 45px); /* Ajusta a largura */
+        }
+
+        .message-bubble {
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .message.bot .message-bubble {
+            background-color: #222;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .message.user .message-bubble {
+            background-color: var(--accent-color);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #777;
+            margin-top: 0.4rem;
+        }
+        
+        .message.user .message-time {
+            text-align: right;
+        }
+
+        /* Indicador de "digitando" */
+        .typing-indicator {
+            display: flex;
+            gap: 0.3rem;
+            padding: 0.8rem 1rem;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-8px);
+            }
+        }
+
+        .chatbot-input-area {
+            padding: 1rem;
+            background-color: var(--dark-gray);
+            border-top: 1px solid #222;
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 0.8rem 1rem;
+            color: var(--white);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-input:focus {
+            border-color: var(--accent-color);
+            background-color: #222;
+        }
+
+        .chatbot-input::placeholder {
+            color: #777;
+        }
+
+        .chatbot-send {
+            background: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .chatbot-send:hover {
+            transform: scale(1.05);
+            background-color: #ff1a1a;
+        }
+
+        .chatbot-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 11. Media Queries (Desktop) */
+        @media (min-width: 768px) {
+            section {
+                padding: 6rem 0;
+            }
+            
+            /* AJUSTE HERO DESKTOP */
+            .hero-image {
+                max-width: 320px; /* DIMINUÍDO (antes era 450px) */
+            }
+
+            .container {
+                width: 85%;
+            }
+
+            .section-title {
+                font-size: 3rem;
+            }
+            
+            /* Header */
+            header nav ul {
+                display: flex; /* Mostra nav no desktop */
+                gap: 2.5rem;
+            }
+
+            header nav a {
+                font-size: 1rem;
+            }
+            
+            /* Seção BIO */
+            .bio-grid {
+                /* 2 colunas no desktop */
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* --- AJUSTES DE AGENDA (Desktop) --- */
+            /* Layout em Grade (Padrão para Desktop) */
+            .event-list.results-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 colunas no desktop */
+            }
+
+            .event-list.results-grid .event-item {
+                /* Força o item a ter a altura de linha e não a altura do conteúdo */
+                flex-direction: row; 
+                align-items: center;
+                gap: 1.5rem;
+                height: auto;
+            }
+            
+            #agenda .event-details {
+                flex: 1;
+                margin-top: 0;
+                padding: 0 1rem;
+            }
+
+            .ticket-button {
+                width: 200px; /* Largura fixa no desktop */
+            }
+            /* --- FIM AJUSTES DE AGENDA (Desktop) --- */
+
+            /* Galeria */
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            
+            /* Quiz */
+            #quiz-options {
+                grid-template-columns: 1fr 1fr; /* 2 colunas no desktop */
+            }
+            
+            /* Chatbot em Desktop */
+            .floating-chatbot {
+                left: auto; /* Reseta o 'left' */
+                bottom: 30px;
+                right: 30px;
+            }
+            
+            .chatbot-preview-button {
+                width: 300px; /* Largura fixa no desktop */
+            }
+            
+            .chatbot-window {
+                left: auto; /* Reseta o 'left' */
+                bottom: 120px; /* Posição acima do botão */
+                right: 30px;
+                width: 400px; /* Largura fixa */
+                height: 550px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+             #hero h1 {
+                letter-spacing: -2px;
+            }
+        }
+        
+        /* NOVO: Estilo para o botão de MUTE/UNMUTE */
+        #music-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(230, 0, 0, 0.9);
+            color: var(--text-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        
+        #music-toggle-btn:hover {
+            background-color: #ff1a1a;
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- NOVO: Botão de Mute/Unmute -->
+    <!-- Ele será visível até que o áudio seja iniciado pela primeira vez -->
+    <button id="music-toggle-btn" aria-label="Ativar música de fundo">
+        <i class="fas fa-volume-off"></i>
+    </button>
+    
+    <!-- NOVO: Slideshow de Fundo -->
+    <div id="page-background-slideshow">
+        <div class="slide-image"></div>
+        <div class="slide-image"></div>
+        <div class="slide-image"></div>
+        <div class="slide-image"></div>
+        <div class="slide-image"></div>
+    </div>
+
+    <!-- 1. Cabeçalho -->
+    <header id="main-header">
+        <!-- ALTERAÇÃO DE HTML: TAURUS em branco/maiúsculo, bot em vermelho/minúsculo -->
+        <a href="#hero" class="logo">TAURUS<span>bot</span></a>
+        <nav>
+            <ul>
+                <li><a href="#bio">A Artista</a></li>
+                <li><a href="#agenda">Agenda</a></li>
+                <li><a href="#galeria">Clipes</a></li>
+                <li><a href="#duquiz">DuQuiz</a></li> <!-- NOVO LINK NAV -->
+                <li><a href="#sobre-bot">O Bot</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- 2. Seção Hero (MODIFICADA) -->
+        <section id="hero">
+            <!-- Nova imagem giratória -->
+            <img 
+                src="duquesa.png" 
+                alt="Duquesa" 
+                class="hero-image reveal"
+                onerror="this.style.display='none'; /* Esconde se não encontrar */"
+            >
+            
+            <div class="hero-content reveal">
+                <h1>DUQUESA</h1>
+                <p>A casa oficial do TAURUS<span>bot</span>.</p>
+                <!-- ALTERAÇÃO DE HTML: TAURUS em branco/maiúsculo, bot em vermelho/minúsculo -->
+                <a href="#" id="hero-cta-bot" class="cta-bot">Conhecer o TAURUS<span>bot</span></a>
+            </div>
+        </section>
+        
+        <!-- 4. NOVA SEÇÃO BIO (Fundo Transparente) -->
+        <section id="bio">
+            <div class="container">
+                <h2 class="bio-title reveal">"Nascida no dia primeiro, Jeysa Ribeiro, meu vulgo cê sabe"</h2>
+                
+                <div class="bio-grid">
+                    <div class="bio-card reveal">
+                        <h3><i class="fas fa-star"></i> A Artista</h3>
+                        <p>Jeysa Ribeiro, conhecida como Duquesa, é uma das vozes mais potentes do rap nacional. Nascida em Feira de Santana (BA), ela se destaca pela lírica afiada, flows versáteis e uma forte identidade visual.</p>
+                    </div>
+                    <div class="bio-card reveal">
+                        <h3><i class="fas fa-music"></i> Discografia</h3>
+                        <p>Com EPs e álbuns aclamados como "Sinto Muito" e a série "TAURUS", Duquesa explora temas de poder, relacionamentos e vivências da mulher negra, consolidando seu espaço no topo da cena.</p>
+                    </div>
+                    <div class="bio-card reveal">
+                        <h3><i class="fas fa-microphone-alt"></i> Feats de Peso</h3>
+                        <!-- TEXTO ATUALIZADO AQUI -->
+                        <p>Sua relevância é marcada por colaborações com grandes nomes do rap, como Tasha & Tracie, MC Luanna e AJULIACOSTA, mostrando sua capacidade de transitar e brilhar em diferentes estilos.</p>
+                    </div>
+                    <div class="bio-card reveal">
+                        <h3><i class="fas fa-trophy"></i> Conquistas</h3>
+                        <p>Além de milhões de streams, Duquesa coleciona indicações a prêmios importantes e é presença constante nos maiores festivais do país, provando ser uma força inegável na música brasileira.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Seção Agenda -->
+        <section id="agenda">
+            <div class="container">
+                <h2 class="section-title reveal">AGENDA TAURUS</h2>
+
+                <!-- NOVO: Seletor de Visualização -->
+                <div class="view-switcher-container reveal">
+                    <button id="view-carousel-btn" class="view-btn active"><i class="fas fa-stream"></i> Carrossel</button>
+                    <button id="view-grid-btn" class="view-btn"><i class="fas fa-th-large"></i> Grade</button>
+                </div>
+                
+                <!-- Lista de Eventos (INICIA EM CARROSSEL) -->
+                <ul class="event-list results-carousel reveal">
+                    <li class="event-item past-event">
+                        <span class="event-date">18 OUT 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">RAP IN CENA</span>
+                            <span class="event-location">PORTO ALEGRE, RS</span>
+                        </div>
+                        <a href="#" class="ticket-button disabled" aria-disabled="true">Evento Passado</a>
+                    </li>
+                    <li class="event-item past-event">
+                        <span class="event-date">19 OUT 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">SANGUE NOVO</span>
+                            <span class="event-location">SALVADOR, BA</span>
+                        </div>
+                        <a href="#" class="ticket-button disabled" aria-disabled="true">Evento Passado</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">31 OUT 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">SESC BELENZINHO</span>
+                            <span class="event-location">SÃO PAULO, SP</span>
+                        </div>
+                        <a href="https://www.sescsp.org.br/programacao/duquesa-2/" target="_blank" class="ticket-button sold-out">Esgotado</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">01 NOV 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">SESC BELENZINHO</span>
+                            <span class="event-location">SÃO PAULO, SP</span>
+                        </div>
+                        <a href="https://www.sescsp.org.br/programacao/duquesa-2/" target="_blank" class="ticket-button sold-out">Esgotado</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">15 NOV 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">BATEKOO</span>
+                            <span class="event-location">SÃO PAULO, SP</span>
+                        </div>
+                        <a href="https://shotgun.live/pt-br/festivals/batekoo-festival-2025" target="_blank" class="ticket-button sold-out">Esgotado</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">20 NOV 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">CONSCIENCIA NEGRA</span>
+                            <span class="event-location">ITATIBA, SP</span>
+                        </div>
+                        <a href="#" class="ticket-button disabled" aria-disabled="true">Link em breve</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">21 NOV 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">CIRCO VOADOR</span>
+                            <span class="event-location">RIO DE JANEIRO, RJ</span>
+                        </div>
+                        <a href="https://www.eventim.com.br/artist/circo-voador/duquesa-no-circo-voador-3990884/" target="_blank" class="ticket-button sold-out">Indisponível</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">22 NOV 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">CIRCO VOADOR</span>
+                            <span class="event-location">RIO DE JANEIRO, RJ</span>
+                        </div>
+                        <a href="https://www.eventim.com.br/artist/circo-voador/duquesa-no-circo-voador-3990884/" target="_blank" class="ticket-button">Comprar Ingresso</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">23 NOV 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">EM BREVE</span>
+                            <span class="event-location">Aguardando...</span>
+                        </div>
+                        <a href="#" class="ticket-button disabled" aria-disabled="true">Aguarde</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">29 NOV 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">AWE FESTIVAL</span>
+                            <span class="event-location">SÃO JOSÉ DO RIO PRETO, SP</span>
+                        </div>
+                        <a href="https://baladapp.com.br/pt-BR/eventos/awe-festival/7264" target="_blank" class="ticket-button">Comprar Ingresso</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">06 DEZ 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">COQUETEL MOLOTOV</span>
+                            <span class="event-location">RECIFE, PE</span>
+                        </div>
+                        <a href="https://shotgun.live/pt-br/festivals/festival-no-ar-coquetel-molotov-2025" target="_blank" class="ticket-button">Comprar Ingresso</a>
+                    </li>
+                    <li class="event-item">
+                        <span class="event-date">20 DEZ 2025</span>
+                        <div class="event-details">
+                            <span class="event-name">ESPAÇO LIV</span>
+                            <span class="event-location">SÃO CAETANO DO SUL, SP</span>
+                        </div>
+                        <a href="https://blacktag.com.br/eventos/29359/duquesa-turne-six" target="_blank" class="ticket-button">Comprar Ingresso</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 6. Seção Galeria/CLIPES (MODIFICADA) -->
+        <section id="galeria">
+            <div class="container">
+                <h2 class="section-title reveal">CLIPES</h2>
+                
+                <div class="gallery-grid reveal">
+                    <!-- Links e Thumbnails automáticos do YouTube -->
+                    
+                    <!-- Clipe 1: 90FKLUceJmg -->
+                    <a href="https://www.youtube.com/watch?v=90FKLUceJmg" target="_blank" class="clip-link">
+                        <img src="https://img.youtube.com/vi/90FKLUceJmg/hqdefault.jpg" alt="Capa do clipe 1">
+                        <i class="fas fa-play play-icon"></i>
+                        <span class="clip-title">Duquesa - 99 (Clipe Oficial)</span>
+                    </a>
+                    
+                    <!-- Clipe 2: qk70PKRTPjY -->
+                    <a href="https://www.youtube.com/watch?v=qk70PKRTPjY" target="_blank" class="clip-link">
+                        <img src="https://img.youtube.com/vi/qk70PKRTPjY/hqdefault.jpg" alt="Capa do clipe 2">
+                        <i class="fas fa-play play-icon"></i>
+                        <span class="clip-title">Duquesa - FIM DE MUNDO (Clipe Oficial)</span>
+                    </a>
+                    
+                    <!-- Clipe 3: fYuRfAc8RQo -->
+                    <a href="https://www.youtube.com/watch?v=fYuRfAc8RQo" target="_blank" class="clip-link">
+                        <img src="https://img.youtube.com/vi/fYuRfAc8RQo/hqdefault.jpg" alt="Capa do clipe 3">
+                        <i class="fas fa-play play-icon"></i>
+                        <span class="clip-title">Duquesa - F.A.K.E. (Clipe Oficial)</span>
+                    </a>
+                    
+                    <!-- Clipe 4: gQreU1BGMmw -->
+                    <a href="https://www.youtube.com/watch?v=gQreU1BGMmw" target="_blank" class="clip-link">
+                        <img src="https://img.youtube.com/vi/gQreU1BGMmw/hqdefault.jpg" alt="Capa do clipe 4">
+                        <i class="fas fa-play play-icon"></i>
+                        <span class="clip-title">Duquesa - One Shot (Clipe Oficial)</span>
+                    </a>
+                    
+                    <!-- Clipe 5: s-t4vQlkDX8 -->
+                    <a href="https://www.youtube.com/watch?v=s-t4vQlkDX8" target="_blank" class="clip-link">
+                        <img src="https://img.youtube.com/vi/s-t4vQlkDX8/hqdefault.jpg" alt="Capa do clipe 5">
+                        <i class="fas fa-play play-icon"></i>
+                        <span class="clip-title">Duquesa - D.N.A (Clipe Oficial)</span>
+                    </a>
+                    
+                    <!-- Clipe 6: ZhBizOLPRT8 -->
+                    <a href="https://www.youtube.com/watch?v=ZhBizOLPRT8" target="_blank" class="clip-link">
+                        <img src="https://img.youtube.com/vi/ZhBizOLPRT8/hqdefault.jpg" alt="Capa do clipe 6">
+                        <i class="fas fa-play play-icon"></i>
+                        <span class="clip-title">Duquesa - QUEM (Clipe Oficial)</span>
+                    </a>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Seção "Conheça o Bot" (Layout Limpo) -->
+        <section id="sobre-bot">
+            <div class="container">
+                <div class="bot-layout-centered reveal">
+                    <!-- CORREÇÃO AQUI -->
+                    <h2 class="section-title">CONHEÇA O TAURUS<span>bot</span></h2>
+                    <div class="bot-text">
+                        <p>
+                            <!-- ALTERAÇÃO DE HTML: TAURUS em branco/maiúsculo, bot em vermelho/minúsculo -->
+                            O TAURUS<span>bot</span> é um assistente digital criado para fãs. Tenha acesso em tempo real à agenda de shows, últimas notícias e tudo sobre o universo de TAURUS. Feito por fãs, para fãs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. NOVA SEÇÃO DUQUIZ -->
+        <section id="duquiz">
+            <div class="container reveal">
+                <div class="quiz-container">
+                    
+                    <!-- Tela Inicial -->
+                    <div class="quiz-screen active" id="quiz-start">
+                        <h2>DUQUIZ</h2>
+                        <p>Teste seu conhecimento sobre as letras da Duquesa. Você consegue acertar 10 trechos?</p>
+                        <button class="quiz-btn" id="quiz-start-btn">Começar</button>
+                    </div>
+                    
+                    <!-- Tela das Perguntas -->
+                    <div class="quiz-screen" id="quiz-question-container">
+                        <div id="quiz-progress">Pergunta 1 de 10</div>
+                        <h3 id="quiz-question-text">Trecho da música aqui...</h3>
+                        <div id="quiz-options">
+                            <!-- Botões de opção serão gerados pelo JS -->
+                        </div>
+                        <div id="quiz-feedback"></div>
+                        <button class="quiz-btn" id="quiz-next-btn">Próxima</button>
+                    </div>
+                    
+                    <!-- Tela de Resultados -->
+                    <div class="quiz-screen" id="quiz-results">
+                        <h2>Resultado</h2>
+                        <p>Você acertou</p>
+                        <div id="quiz-score">0 / 10</div>
+                        <button class="quiz-btn" id="quiz-restart-btn">Recomeçar</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. Seção Redes Sociais (LINKS ATUALIZADOS) -->
+        <section id="redes">
+            <div class="container reveal">
+                <div class="social-links">
+                    <a href="https://open.spotify.com/intl-pt/artist/1JlC6XG7lkwT6GzgQB9xOx" target="_blank" aria-label="Spotify"><i class="fab fa-spotify"></i></a>
+                    <a href="https://www.instagram.com/DUQUESA" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://x.com/ABig__d" target="_blank" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://www.youtube.com/@oficialduquesa" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 10. Rodapé (ATUALIZADO COM WHATSAPP) -->
+    <footer>
+        <div class="container">
+            <p>
+                © 2025 | Desenvolvido por 
+                <a 
+                    href="https://api.whatsapp.com/send?phone=5511913324827" 
+                    target="_blank" 
+                    class="dev-link"
+                >Leanttro</a>.
+            </p>
+        </div>
+    </footer>
+
+    <!-- 11. Floating Chatbot (Com Preview) -->
+    <div class="floating-chatbot">
+        
+        <!-- O Botão agora é a caixa de preview -->
+        <div class="chatbot-preview-button" id="chatbotButton" aria-label="Abrir TAURUSbot">
+            <div class="preview-header">
+                <!-- ALTERAÇÃO DE HTML: TAURUS em branco/maiúsculo, bot em vermelho/minúsculo -->
+                <div class="preview-avatar">T</div>
+                <div class="preview-info">
+                    <strong>TAURUS<span>bot</span></strong>
+                    <span>Online</span>
+                </div>
+            </div>
+            <div class="preview-message-bubble">
+                <span id="preview-message-text">E aí! 🔥 Quer saber da agenda?</span>
+            </div>
+        </div>
+
+        <!-- A Janela principal do Chat -->
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="chatbot-header-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chatbot-header-info">
+                    <!-- ALTERAÇÃO DE HTML: TAURUS em branco/maiúsculo, bot em vermelho/minúsculo -->
+                    <h3>TAURUS<span style="color: var(--accent-color); text-transform: lowercase;">bot</span></h3>
+                    <p>Online</p>
+                </div>
+                <button class="chatbot-close" id="chatbotClose" aria-label="Fechar chat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="chatbot-messages" id="chatbotMessages">
+                <!-- Mensagem inicial -->
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            E aí! 🔥 Bem-vindo ao universo TAURUS. Como posso te ajudar hoje?
+                        </div>
+                        <div class="message-time">Agora</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chatbot-input-area">
+                <input 
+                    type="text" 
+                    class="chatbot-input" 
+                    id="chatbotInput" 
+                    placeholder="Digite sua mensagem..."
+                    autocomplete="off"
+                >
+                <button class="chatbot-send" id="chatbotSend" aria-label="Enviar mensagem">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- NOVO: Lógica de Áudio (Tone.js) ---
+            const musicToggleBtn = document.getElementById('music-toggle-btn');
+            const musicIcon = musicToggleBtn.querySelector('i');
+            let isMusicPlaying = false;
+            let audioPlayer;
+            let audioInitialized = false;
+
+            // URL de um snippet de áudio de alta energia (simulando "Fuso")
+            const FUSO_AUDIO_URL = 'https://res.cloudinary.com/dvz0jqw6g/video/upload/v1709224376/hiphop_beat_loop_v2_f8wz9o.mp3';
+
+            function initializeAudio() {
+                if (audioInitialized) return;
+
+                try {
+                    // Configura o player do Tone.js
+                    audioPlayer = new Tone.Player({
+                        url: FUSO_AUDIO_URL,
+                        loop: true,
+                        volume: -10 // Volume inicial um pouco baixo
+                    }).toDestination();
+
+                    // Adiciona o listener de carregamento (opcional, mas bom)
+                    audioPlayer.loaded.then(() => {
+                        console.log("Áudio FUSO carregado.");
+                        // O ícone de MUTE estará visível. O áudio só toca no primeiro clique.
+                    }).catch(error => {
+                        console.error("Erro ao carregar o áudio FUSO:", error);
+                    });
+
+                    audioInitialized = true;
+                } catch (e) {
+                    console.error("Erro ao configurar Tone.js:", e);
+                }
+            }
+
+            function toggleMusic(e) {
+                // Inicia o contexto de áudio em qualquer interação do usuário
+                if (Tone.context.state !== 'running') {
+                    Tone.start().then(() => {
+                        console.log("Contexto de áudio Tone.js iniciado.");
+                        // Tenta tocar apenas após a inicialização do contexto
+                        if (audioPlayer && audioPlayer.loaded) {
+                            startMusic();
+                        }
+                    });
+                } else if (e && e.target === musicToggleBtn) {
+                    // Se o clique veio diretamente do botão de toggle, manipula MUTE/UNMUTE
+                    if (isMusicPlaying) {
+                        stopMusic();
+                    } else {
+                        startMusic();
+                    }
+                } else if (!isMusicPlaying) {
+                     // Se o clique veio de outro lugar e a música não está tocando, inicia
+                    startMusic();
+                }
+            }
+
+            function startMusic() {
+                if (audioPlayer && audioPlayer.loaded && !isMusicPlaying) {
+                    audioPlayer.start();
+                    isMusicPlaying = true;
+                    musicIcon.className = 'fas fa-volume-up';
+                    musicToggleBtn.setAttribute('aria-label', 'Desativar música de fundo');
+                }
+            }
+
+            function stopMusic() {
+                if (audioPlayer && isMusicPlaying) {
+                    audioPlayer.stop();
+                    isMusicPlaying = false;
+                    musicIcon.className = 'fas fa-volume-off';
+                    musicToggleBtn.setAttribute('aria-label', 'Ativar música de fundo');
+                }
+            }
+            
+            // Inicializa a configuração do áudio (sem tocar)
+            initializeAudio();
+
+            // Adiciona listener para a primeira interação em qualquer lugar do corpo, e no botão.
+            document.body.addEventListener('click', toggleMusic, { once: true });
+            musicToggleBtn.addEventListener('click', toggleMusic);
+            
+            // --- FIM Lógica de Áudio ---
+
+
+            // --- 1. Efeito de Header "Scrolled" ---
+            const header = document.getElementById('main-header');
+            if (header) { // Verifica se o header existe
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                });
+            }
+
+            // --- 2. Smooth Scroll para Links de Navegação ---
+            const navLinks = document.querySelectorAll('header nav a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const href = this.getAttribute('href');
+                    const targetId = href.substring(1);
+                    const targetElement = document.getElementById(targetId);
+
+                    if (targetElement) {
+                        const headerOffset = header ? header.offsetHeight : 0;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- 3. Efeito "Scroll Reveal" ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // observer.unobserve(entry.target); // Opcional
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
+            });
+
+            // --- NOVO: Lógica do Seletor de Visualização da Agenda ---
+            const viewCarouselBtn = document.getElementById('view-carousel-btn');
+            const viewGridBtn = document.getElementById('view-grid-btn');
+            const eventList = document.querySelector('#agenda .event-list');
+
+            if (viewCarouselBtn && viewGridBtn && eventList) {
+                // O Carrossel é o padrão no HTML (results-carousel) e isso deve ser mantido.
+                // A classe 'active' já está no botão de Carrossel no HTML.
+
+                viewCarouselBtn.addEventListener('click', () => {
+                    eventList.classList.add('results-carousel');
+                    eventList.classList.remove('results-grid');
+                    viewCarouselBtn.classList.add('active');
+                    viewGridBtn.classList.remove('active');
+                });
+
+                viewGridBtn.addEventListener('click', () => {
+                    eventList.classList.add('results-grid');
+                    eventList.classList.remove('results-carousel');
+                    viewGridBtn.classList.add('active');
+                    viewCarouselBtn.classList.remove('active');
+                });
+            }
+            
+            // --- 4. Lógica do Chatbot Placebo ---
+            const chatbotButton = document.getElementById('chatbotButton');
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            const chatbotClose = document.getElementById('chatbotClose');
+            const chatbotInput = document.getElementById('chatbotInput');
+            const chatbotSend = document.getElementById('chatbotSend');
+            const chatbotMessages = document.getElementById('chatbotMessages');
+            const heroCtaButton = document.getElementById('hero-cta-bot'); // Botão do Hero
+            const previewMessageEl = document.getElementById('preview-message-text'); // Span da mensagem de preview
+
+            // --- 4a. Lógica para trocar mensagens do preview ---
+            const previewMessages = [
+                "E aí! 🔥 Quer saber da agenda?",
+                "Clique aqui para falar comigo!",
+                "Últimas notícias da Duquesa...",
+                "Fala fã! Posso ajudar?",
+                "Agenda de shows atualizada!"
+            ];
+            let messageIndex = 0;
+
+            if (previewMessageEl) { // Verifica se o elemento existe
+                setInterval(() => {
+                    messageIndex = (messageIndex + 1) % previewMessages.length;
+                    
+                    // Efeito de fade out/in
+                    previewMessageEl.style.opacity = 0;
+                    setTimeout(() => {
+                        previewMessageEl.textContent = previewMessages[messageIndex];
+                        previewMessageEl.style.opacity = 1;
+                    }, 300); // tempo para o fade
+                }, 4000); // Troca a cada 4 segundos
+            }
+
+            // --- 4b. Abrir/Fechar chatbot ---
+            function toggleChat(e) {
+                if (e) e.preventDefault();
+                const isActive = chatbotWindow.classList.contains('active');
+                
+                if (isActive) {
+                    chatbotWindow.classList.remove('active');
+                    chatbotButton.classList.remove('active');
+                } else {
+                    chatbotWindow.classList.add('active');
+                    chatbotButton.classList.add('active');
+                    setTimeout(() => chatbotInput.focus(), 300); // Foca no input após a animação
+                }
+            }
+
+            if (chatbotButton) chatbotButton.addEventListener('click', toggleChat);
+            if (chatbotClose) chatbotClose.addEventListener('click', toggleChat);
+            if (heroCtaButton) heroCtaButton.addEventListener('click', toggleChat); // Botão do Hero também abre o chat
+
+            // --- 4c. Funções do Chat ---
+            
+            // Formata a hora atual
+            function getCurrentTime() {
+                const now = new Date();
+                return now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            // Adiciona mensagem ao chat
+            function addMessage(text, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+                
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas fa-${isUser ? 'user' : 'robot'}"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">${text}</div>
+                        <div class="message-time">${getCurrentTime()}</div>
+                    </div>
+                `;
+                
+                if (chatbotMessages) {
+                    chatbotMessages.appendChild(messageDiv);
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Rola para o final
+                }
+            }
+
+            // Mostra indicador de "digitando"
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message bot typing-message';
+                typingDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div class="typing-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                if (chatbotMessages) {
+                    chatbotMessages.appendChild(typingDiv);
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                }
+                return typingDiv;
+            }
+
+            // Remove indicador de "digitando"
+            function removeTypingIndicator(typingDiv) {
+                if (typingDiv && typingDiv.parentNode) {
+                    typingDiv.parentNode.removeChild(typingDiv);
+                }
+            }
+
+            // Respostas "Placebo" do Bot
+            const botResponses = {
+                'agenda': 'Confira os próximos shows na seção Agenda! 🎤 Tem shows incríveis chegando em São Paulo, Rio e Salvador.',
+                'show': 'Os próximos shows são: Festival de Verão (30/11 - SP), Noite do TAURUS (12/12 - RJ) e Show de Encerramento (18/12 - Salvador). Qual te interessa?',
+                'taurus': 'TAURUS é mais que um álbum, é um movimento! 🔥 O TAURUSbot tá aqui pra te manter atualizado sobre tudo.',
+                'duquesa': 'Duquesa é a dona da parada! 👑 Rapper, compositora e referência no rap brasileiro. Quer saber mais sobre ela?',
+                'oi': 'E aí! 🔥 Seja bem-vindo! Quer saber sobre a agenda de shows, músicas ou curiosidades sobre a Duquesa?',
+                'olá': 'Olá! 👋 Como posso te ajudar hoje? Posso falar sobre shows, músicas ou qualquer coisa do universo TAURUS!',
+                'música': 'As músicas do TAURUS são fogo! 🎵 Qual sua favorita? Quer que eu te conte sobre alguma específica?',
+                'default': 'Entendido! Essa é uma ótima pergunta. No momento, estou em modo de testes, mas em breve minha API será conectada e poderei te dar todas as informações sobre a Duquesa e o universo TAURUS! 🔥'
+            };
+
+            // Pega uma resposta do bot
+            function getBotResponse(userMessage) {
+                const message = userMessage.toLowerCase();
+                
+                for (let key in botResponses) {
+                    if (message.includes(key)) {
+                        return botResponses[key];
+                    }
+                }
+                
+                return botResponses.default;
+            }
+
+            // Função principal para enviar mensagem
+            function sendMessage() {
+                if (!chatbotInput) return;
+                const message = chatbotInput.value.trim();
+                
+                if (message === '') return;
+                
+                addMessage(message, true);
+                chatbotInput.value = '';
+                
+                const typingIndicator = showTypingIndicator();
+                
+                // Simula o tempo de resposta do bot
+                setTimeout(() => {
+                    removeTypingIndicator(typingIndicator);
+                    const response = getBotResponse(message);
+                    addMessage(response, false);
+                }, 1000 + Math.random() * 800);
+            }
+
+            // Event Listeners para enviar
+            if (chatbotSend) chatbotSend.addEventListener('click', sendMessage);
+            if (chatbotInput) chatbotInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            
+            // --- 5. NOVA LÓGICA DO DUQUIZ (ATUALIZADA) ---
+            
+            const quizStartScreen = document.getElementById('quiz-start');
+            const quizQuestionScreen = document.getElementById('quiz-question-container');
+            const quizResultsScreen = document.getElementById('quiz-results');
+            
+            const quizStartBtn = document.getElementById('quiz-start-btn');
+            const quizNextBtn = document.getElementById('quiz-next-btn');
+            const quizRestartBtn = document.getElementById('quiz-restart-btn');
+            
+            const quizProgress = document.getElementById('quiz-progress');
+            const quizQuestionText = document.getElementById('quiz-question-text');
+            const quizOptionsContainer = document.getElementById('quiz-options');
+            const quizFeedback = document.getElementById('quiz-feedback');
+            const quizScoreEl = document.getElementById('quiz-score');
+
+            // --- Banco de Perguntas (ATUALIZADO) ---
+            // Nomes de músicas para as opções
+            const songNames = [
+                "PARA PRA PENSAR", 
+                "TAURUS", 
+                "Disk P@#$%&!", 
+                "No meu club", 
+                "FUSO", 
+                "Tá Eu e a Nicole", 
+                "Purple Rain"
+            ];
+            
+            const allQuestions = [
+                // PARA PRA PENSAR
+                { quote: "Eu quero ficar essa noite do seu lado, Não queira fazer que eu te faça me olhar de longe", song: "PARA PRA PENSAR" },
+                { quote: "Me abraça enquanto a dor não passa, É que eu deixei tudo pra trás", song: "PARA PRA PENSAR" },
+                // TAURUS
+                { quote: "Ele ama minha baby face, O meu jeito lady, A minha big ass, Sua boca é fake", song: "TAURUS" },
+                { quote: "Como fica triste com um rabo desse?", song: "TAURUS" },
+                // Disk P@#$%&!
+                { quote: "Ele gosta de uma cavala grande, do tamanho da sua fome", song: "Disk P@#$%&!" },
+                { quote: "Adora essa vida que eu proporciono e diz que, na cama, eu sou perversa", song: "Disk P@#$%&!" },
+                // No meu club
+                { quote: "Amor, se tiver little dick, Não vai funcionar de lado", song: "No meu club" },
+                { quote: "Um hater me falou que eu tava grande, Eu disse: Engoli a cena", song: "No meu club" },
+                // FUSO
+                { quote: "Fiquei mais cara, No cheiro do pescoço, Linda de tudo, Gostosa de rosto", song: "FUSO" },
+                { quote: "Faça o que for, Mas não deixem que esqueçam quem que banca", song: "FUSO" },
+                // Tá Eu e a Nicole
+                { quote: "Mas se tentar com a tropa, certamente vai tomar", song: "Tá Eu e a Nicole" },
+                { quote: "Eu tô fudendo com a elite, eu tô fazendo passaporte", song: "Tá Eu e a Nicole" },
+                { quote: "Eu tô fudendo com a cena, eu tô ganhando meu malote", song: "Tá Eu e a Nicole" },
+                { quote: "Flor pura na minha blunt, hoje eu vou descer com o bonde", song: "Tá Eu e a Nicole" },
+                // Purple Rain
+                { quote: "Amor, conta o segredo do volume do seu jeans", song: "Purple Rain" },
+                // { quote: "Queria que cê soubesse: Minha xota sente saudade", song: "Purple Rain" } // Removida por ter 2 frases
+            ];
+
+            let shuffledQuestions = [];
+            let currentQuestionIndex = 0;
+            let score = 0;
+            const totalQuestions = 10;
+
+            if (quizStartBtn) {
+                quizStartBtn.addEventListener('click', startQuiz);
+            }
+            if (quizNextBtn) {
+                quizNextBtn.addEventListener('click', () => {
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < totalQuestions) {
+                        showQuestion();
+                    } else {
+                        showResults();
+                    }
+                });
+            }
+            if (quizRestartBtn) {
+                quizRestartBtn.addEventListener('click', startQuiz);
+            }
+            
+            function startQuiz() {
+                score = 0;
+                currentQuestionIndex = 0;
+                // Embaralha todas as perguntas e pega as 10 primeiras
+                shuffledQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, totalQuestions);
+                
+                // Mostra a tela de pergunta e esconde as outras
+                quizStartScreen.classList.remove('active');
+                quizResultsScreen.classList.remove('active');
+                quizQuestionScreen.classList.add('active');
+                
+                showQuestion();
+            }
+
+            function showQuestion() {
+                resetQuestionState();
+                const question = shuffledQuestions[currentQuestionIndex];
+                
+                quizProgress.textContent = `Pergunta ${currentQuestionIndex + 1} de ${totalQuestions}`;
+                quizQuestionText.textContent = question.quote;
+                
+                // Gera 5 opções, incluindo a resposta correta
+                const options = generateOptions(question.song);
+                
+                options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.classList.add('option-btn');
+                    button.textContent = option;
+                    button.addEventListener('click', () => selectAnswer(option, question.song));
+                    quizOptionsContainer.appendChild(button);
+                });
+            }
+            
+            function generateOptions(correctAnswer) {
+                let options = [correctAnswer];
+                let songNamesCopy = [...songNames]; // Copia para não modificar o original
+                
+                // Remove a resposta correta da lista de cópias
+                songNamesCopy = songNamesCopy.filter(song => song !== correctAnswer);
+                
+                // Adiciona 4 músicas aleatórias
+                while (options.length < 5 && songNamesCopy.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * songNamesCopy.length);
+                    const randomSong = songNamesCopy.splice(randomIndex, 1)[0];
+                    options.push(randomSong);
+                }
+                
+                // Embaralha as 5 opções
+                return options.sort(() => 0.5 - Math.random());
+            }
+
+            function resetQuestionState() {
+                quizOptionsContainer.innerHTML = '';
+                quizFeedback.textContent = '';
+                quizFeedback.style.display = 'none';
+                quizNextBtn.style.display = 'none';
+            }
+
+            function selectAnswer(selectedOption, correctOption) {
+                // Desabilita todos os botões
+                Array.from(quizOptionsContainer.children).forEach(btn => {
+                    btn.disabled = true;
+                });
+                
+                if (selectedOption === correctOption) {
+                    score++;
+                    quizFeedback.textContent = "Acertou! 🔥";
+                    quizFeedback.className = 'correct';
+                } else {
+                    quizFeedback.textContent = `Erro! A resposta era "${correctOption}".`;
+                    quizFeedback.className = 'wrong';
+                }
+                
+                quizFeedback.style.display = 'block';
+                
+                // Mostra qual era a correta e a errada
+                Array.from(quizOptionsContainer.children).forEach(btn => {
+                    if (btn.textContent === correctOption) {
+                        btn.classList.add('correct');
+                    } else if (btn.textContent === selectedOption) {
+                        btn.classList.add('wrong');
+                    }
+                });
+                
+                // Mostra o botão "Próxima"
+                quizNextBtn.style.display = 'inline-block';
+            }
+
+            function showResults() {
+                quizQuestionScreen.classList.remove('active');
+                quizResultsScreen.classList.add('active');
+                quizScoreEl.textContent = `${score} / ${totalQuestions}`;
+            }
+
+        });
+    </script>
+
+</body>
+</html>
