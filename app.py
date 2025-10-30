@@ -36,6 +36,7 @@ except Exception as e:
     print(f"❌ Erro ao carregar chaves: {e}")
 
 # --- 3. SYSTEM PROMPT (A PERSONALIDADE DO BOT) ---
+# --- ALTERAÇÃO INÍCIO: Adicionadas regras de Positividade (8, 9) e Citação de Fonte (7) ---
 SYSTEM_PROMPT = """
 Você é o 'TAURUSbot', o assistente digital oficial e fã número 1 da artista brasileira Duquesa (Jeysa Ribeiro).
 Sua personalidade é inspirada no signo de Touro: leal, criativo, forte, direto e um pouco irônico, mas sempre amigável.
@@ -48,7 +49,11 @@ REGRAS PRINCIPAIS:
 4.  **Prioridade Máxima:** Para perguntas sobre "agenda", "shows", "datas" ou "próximo show", SEMPRE use o "CONTEXTO FIXO (Agenda Oficial)" como sua fonte da verdade. Ele é mais confiável que a busca na web.
 5.  **Notícias:** Para "notícias", "lançamentos" ou outros assuntos, use o "CONTEXTO DA WEB".
 6.  **Não especule:** Se a informação não estiver em NENHUM dos contextos, diga que não achou nos "corres".
+7.  **Citar Fontes (IMPORTANTE):** Ao usar uma informação do "CONTEXTO DA WEB", você DEVE citar a URL da fonte que está no contexto. (Ex: "Vi aqui no [Título da Fonte] que... e o link é esse: [URL]"). Se o contexto não tiver a info, diga "Não achei nenhuma fonte sobre isso nos meus corres."
+8.  **Positividade Absoluta:** Você NUNCA pode dizer nada negativo, depreciativo ou que possa ser interpretado como 'hate' sobre a Duquesa, sua música, sua aparência ou sua carreira. Filtre o "CONTEXTO DA WEB" para extrair apenas fatos e notícias positivas ou neutras.
+9.  **Bloqueio de Hate (IMPORTANTE):** Se um usuário fizer uma pergunta negativa, com 'hate', ou que seja uma crítica à Duquesa, você DEVE recusar educadamente. Responda algo como: 'Opa, aqui no TAURUSbot a gente só foca na energia boa e no talento da rainha 👑. Não vou com essa vibe. Manda outra pergunta aí!'
 """
+# --- ALTERAÇÃO FIM ---
 
 # --- NOVA SEÇÃO: CONTEXTO FIXO (RAG LOCAL) ---
 # Copiado diretamente da agenda do index.html (Data de hoje: 30/10/2025)
@@ -69,21 +74,20 @@ LOCAL_AGENDA_CONTEXT = """
 """
 
 # --- 4. FUNÇÃO DE BUSCA (O "R" DO RAG) ---
+# --- ALTERAÇÃO INÍCIO: Modificada para retornar Título, URL e Snippet ---
 def google_search(query_str, api_key, cx_id, num_results=3):
     """
-    Realiza uma busca na Google Custom Search API e retorna snippets formatados.
+    Realiza uma busca na Google Custom Search API e retorna snippets formatados
+    contendo o Título, a URL e o Snippet.
     """
     print(f"ℹ️  [RAG] Realizando busca por: '{query_str}'")
     try:
         service = build("customsearch", "v1", developerKey=api_key)
         
-        # MODIFICAÇÃO: Adicionamos 'siteSearch' para focar a busca APENAS no seu site
-        # Isso força o Google a olhar para https://taurusbot.onrender.com/
         res = service.cse().list(
             q=query_str,
             cx=cx_id,
             num=num_results,
-            # siteSearch="https://taurusbot.onrender.com/" # Descomente esta linha quando o site estiver indexado
         ).execute()
 
         items = res.get('items', [])
@@ -94,7 +98,11 @@ def google_search(query_str, api_key, cx_id, num_results=3):
         snippets = []
         for i, item in enumerate(items):
             snippet_text = item.get('snippet', 'Sem descrição.').replace('\n', ' ').strip()
-            snippets.append(f"Fonte {i+1} ({item.get('title', 'desconhecido')}): \"{snippet_text}\"")
+            item_title = item.get('title', 'Fonte Desconhecida')
+            item_url = item.get('link', 'URL Não encontrada') # Pega o link (URL)
+            
+            # Novo formato do contexto, incluindo a URL
+            snippets.append(f"Fonte {i+1} (Título: {item_title}, URL: {item_url}): \"{snippet_text}\"")
         
         context_str = " | ".join(snippets)
         print(f"✅  [RAG] Contexto encontrado: {context_str[:100]}...")
@@ -107,6 +115,7 @@ def google_search(query_str, api_key, cx_id, num_results=3):
         print(f"❌ ERRO [RAG] Inesperado: {e}")
         traceback.print_exc()
         return "Erro inesperado ao processar a busca."
+# --- ALTERAÇÃO FIM ---
 
 # --- 5. INICIALIZAÇÃO DO GEMINI ---
 model = None
@@ -180,7 +189,8 @@ def handle_chat():
         
         INSTRUÇÃO: Responda o usuário. 
         - Se a pergunta for sobre "próximo show", "agenda" ou "datas", olhe o "CONTEXTO FIXO" e a data de hoje. 
-        - Para notícias ou outros assuntos, use o "CONTEXTO DA WEB".
+        - Para notícias ou outros assuntos, use o "CONTEXTO DA WEB" e **lembre-se da REGRA 7 (Citar Fonte) e REGRA 8 (Positividade)**.
+        - Se o usuário for negativo, lembre-se da **REGRA 9 (Bloqueio de Hate)**.
         """
 
         # 4. Envia para o Gemini
@@ -206,4 +216,3 @@ def handle_chat():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
-
