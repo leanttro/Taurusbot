@@ -1996,8 +1996,12 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
                 
+                // --- INÍCIO ALTERAÇÃO: Converter Markdown Básico ---
                 // Converte quebras de linha \n para <br>
-                const formattedText = text.replace(/\n/g, '<br>');
+                let formattedText = text.replace(/\n/g, '<br>');
+                // Converte **negrito** para <strong>negrito</strong>
+                formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                // --- FIM ALTERAÇÃO ---
 
                 messageDiv.innerHTML = `
                     <div class="message-avatar">
@@ -2329,3 +2333,4 @@
 
 </body>
 </html>
+
