@@ -258,6 +258,7 @@
             font-size: 1.5rem;
             font-weight: 800;
             color: var(--text-color); /* TAURUS em branco */
+            z-index: 1002; /* Para ficar acima do menu mobile */
         }
         
         header .logo span {
@@ -268,15 +269,53 @@
         header nav ul {
             list-style: none;
             display: none; /* Escondido por padrão (mobile-first) */
-            gap: 1.5rem;
+            
+            /* --- INÍCIO ALTERAÇÃO: Estilos do Menu Mobile --- */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh; /* Tela cheia */
+            background: var(--bg-color); /* Fundo preto sólido */
+            flex-direction: column;
+            justify-content: center; /* Centraliza links */
+            align-items: center;
+            gap: 2rem; /* Mais espaço */
+            z-index: 999; /* Abaixo do logo e botão hamburguer */
+            transform: translateX(100%); /* Escondido fora da tela */
+            transition: transform 0.3s ease-in-out;
+            /* --- FIM ALTERAÇÃO --- */
+        }
+
+        /* --- NOVO: Classe para mostrar menu mobile --- */
+        header nav ul.nav-active {
+            display: flex; /* Torna-o um container flex */
+            transform: translateX(0); /* Traz para a tela */
+        }
+        
+        /* --- NOVO: Links maiores no menu mobile --- */
+        header nav ul li a {
+            font-size: 1.5rem; 
         }
 
         header nav a {
-            font-size: 0.9rem;
+            /* font-size: 0.9rem; (removido, agora controlado acima) */
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        
+        /* --- NOVO: Botão Hamburguer --- */
+        .hamburger-btn {
+            display: block; /* Visível no mobile (padrão) */
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1002; /* Acima de tudo */
+        }
+
 
         /* 3. Seção Hero (MODIFICADA) */
         #hero {
@@ -909,6 +948,15 @@
             text-shadow: 0 0 10px rgba(230, 0, 0, 0.5);
         }
         
+        /* --- INÍCIO ALTERAÇÃO: Espaçador de Rodapé Mobile --- */
+        .mobile-footer-spacer {
+            display: block; /* Visível no mobile (padrão) */
+            height: 150px; /* Altura para rolar além do chatbot */
+            background-color: #000; /* Preto sólido */
+        }
+        /* --- FIM ALTERAÇÃO --- */
+
+
         /* 11. Floating Chatbot (AGORA COM PREVIEW DE CHAT) */
         .floating-chatbot {
             position: fixed;
@@ -1308,12 +1356,29 @@
             /* Header */
             header nav ul {
                 display: flex; /* Mostra nav no desktop */
+                
+                /* --- INÍCIO ALTERAÇÃO: Reset Estilos Mobile --- */
+                position: static;
+                width: auto;
+                height: auto;
+                background: none;
+                flex-direction: row;
+                justify-content: flex-start;
+                transform: none;
+                transition: none;
                 gap: 2.5rem;
+                /* --- FIM ALTERAÇÃO --- */
             }
 
             header nav a {
-                font-size: 1rem;
+                font-size: 1rem; /* Tamanho original desktop */
             }
+            
+            /* --- INÍCIO ALTERAÇÃO: Esconde Hamburguer --- */
+            .hamburger-btn {
+                display: none;
+            }
+            /* --- FIM ALTERAÇÃO --- */
             
             /* Seção BIO */
             .bio-grid {
@@ -1375,6 +1440,12 @@
                 width: 400px; /* Largura fixa */
                 height: 550px;
             }
+
+            /* --- INÍCIO ALTERAÇÃO: Esconde Espaçador no Desktop --- */
+            .mobile-footer-spacer {
+                display: none;
+            }
+            /* --- FIM ALTERAÇÃO --- */
         }
         
         @media (min-width: 1024px) {
@@ -1408,6 +1479,11 @@
                 <li><a href="#sobre-bot">O Bot</a></li>
             </ul>
         </nav>
+        <!-- --- INÍCIO ALTERAÇÃO: Botão Hamburguer Adicionado --- -->
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+        </button>
+        <!-- --- FIM ALTERAÇÃO --- -->
     </header>
 
     <main>
@@ -1702,6 +1778,11 @@
             </p>
         </div>
     </footer>
+    
+    <!-- --- INÍCIO ALTERAÇÃO: Espaçador Mobile Adicionado --- -->
+    <div class="mobile-footer-spacer"></div>
+    <!-- --- FIM ALTERAÇÃO --- -->
+
 
     <!-- 11. Floating Chatbot (Com Preview) -->
     <div class="floating-chatbot">
@@ -2202,6 +2283,46 @@
                 if(quizResultsScreen) quizResultsScreen.classList.add('active');
                 if(quizScoreEl) quizScoreEl.textContent = `${score} / ${totalQuestions}`;
             }
+            
+            
+            // --- INÍCIO ALTERAÇÃO: Lógica do Menu Hamburguer ---
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const navUl = document.querySelector('header nav ul');
+            const navMenuLinks = document.querySelectorAll('header nav ul li a'); // Links dentro do menu
+
+            if (hamburgerBtn && navUl) {
+                hamburgerBtn.addEventListener('click', () => {
+                    // Alterna a classe que mostra/esconde o menu
+                    navUl.classList.toggle('nav-active');
+                    
+                    // Alterna o atributo ARIA para acessibilidade
+                    const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+                    hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
+                    
+                    // Alterna o ícone (Barras / X)
+                    const icon = hamburgerBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('fa-bars');
+                        icon.classList.toggle('fa-times');
+                    }
+                });
+                
+                // Adiciona evento para FECHAR o menu ao clicar em um link
+                navMenuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (navUl.classList.contains('nav-active')) {
+                            navUl.classList.remove('nav-active');
+                            hamburgerBtn.setAttribute('aria-expanded', 'false');
+                            const icon = hamburgerBtn.querySelector('i');
+                            if (icon) {
+                                icon.classList.add('fa-bars');
+                                icon.classList.remove('fa-times');
+                            }
+                        }
+                    });
+                });
+            }
+            // --- FIM ALTERAÇÃO ---
 
         });
     </script>
