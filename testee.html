@@ -1799,27 +1799,29 @@
             let audioPlayer;
             let audioInitialized = false;
 
-            // URL de um snippet de áudio de alta energia (simulando "Fuso")
-            const FUSO_AUDIO_URL = 'https://res.cloudinary.com/dvz0jqw6g/video/upload/v1709224376/hiphop_beat_loop_v2_f8wz9o.mp3';
+            // URL CORRIGIDA PARA ARQUIVO LOCAL (fuso.mp3)
+            const FUSO_AUDIO_URL = 'fuso.mp3'; 
 
             function initializeAudio() {
                 if (audioInitialized) return;
 
                 try {
                     // Configura o player do Tone.js
+                    // Note que a propriedade 'onload' é usada para callback de carregamento nesta versão
                     audioPlayer = new Tone.Player({
                         url: FUSO_AUDIO_URL,
                         loop: true,
-                        volume: -10 // Volume inicial um pouco baixo
+                        volume: -10, // Volume inicial um pouco baixo
+                        onload: () => {
+                            console.log("Áudio FUSO carregado via onload.");
+                        },
+                        onerror: (id) => {
+                            console.error("Erro ao carregar o áudio FUSO (onerror):", id);
+                            // Sugestão de UX: desabilitar o botão se o áudio não carregar
+                            musicToggleBtn.disabled = true;
+                            musicToggleBtn.style.opacity = '0.5';
+                        }
                     }).toDestination();
-
-                    // Adiciona o listener de carregamento (opcional, mas bom)
-                    audioPlayer.loaded.then(() => {
-                        console.log("Áudio FUSO carregado.");
-                        // O ícone de MUTE estará visível. O áudio só toca no primeiro clique.
-                    }).catch(error => {
-                        console.error("Erro ao carregar o áudio FUSO:", error);
-                    });
 
                     audioInitialized = true;
                 } catch (e) {
@@ -1828,34 +1830,43 @@
             }
 
             function toggleMusic(e) {
-                // Inicia o contexto de áudio em qualquer interação do usuário
+                // A lógica de start/pause está agora toda concentrada no clique do botão.
+
+                // 1. Inicializa o contexto (necessário para navegadores) e inicia a reprodução
                 if (Tone.context.state !== 'running') {
+                    // Inicia o contexto de áudio
                     Tone.start().then(() => {
                         console.log("Contexto de áudio Tone.js iniciado.");
-                        // Tenta tocar apenas após a inicialização do contexto
-                        if (audioPlayer && audioPlayer.loaded) {
+                        // Tenta iniciar a música logo após iniciar o contexto
+                        if (!isMusicPlaying) {
                             startMusic();
                         }
+                    }).catch(err => {
+                        console.error("Falha ao iniciar o contexto de áudio:", err);
                     });
-                } else if (e && e.target === musicToggleBtn) {
-                    // Se o clique veio diretamente do botão de toggle, manipula MUTE/UNMUTE
+                } else {
+                    // 2. Se o contexto já está rodando, apenas manipula play/pause
                     if (isMusicPlaying) {
                         stopMusic();
                     } else {
                         startMusic();
                     }
-                } else if (!isMusicPlaying) {
-                     // Se o clique veio de outro lugar e a música não está tocando, inicia
-                    startMusic();
                 }
             }
 
             function startMusic() {
+                // Verifica a propriedade 'loaded' do Player
                 if (audioPlayer && audioPlayer.loaded && !isMusicPlaying) {
                     audioPlayer.start();
                     isMusicPlaying = true;
                     musicIcon.className = 'fas fa-volume-up';
                     musicToggleBtn.setAttribute('aria-label', 'Desativar música de fundo');
+                } else if (audioPlayer && !audioPlayer.loaded) {
+                    console.log("Áudio ainda não carregado. Aguardando e iniciando listener...");
+                    // Se não estiver carregado, adicionamos um listener temporário para iniciar assim que carregar
+                    audioPlayer.once('load', () => {
+                        startMusic(); // Chama startMusic novamente após o carregamento
+                    });
                 }
             }
 
@@ -1871,8 +1882,7 @@
             // Inicializa a configuração do áudio (sem tocar)
             initializeAudio();
 
-            // Adiciona listener para a primeira interação em qualquer lugar do corpo, e no botão.
-            document.body.addEventListener('click', toggleMusic, { once: true });
+            // O botão agora é o ÚNICO ponto de entrada para a música.
             musicToggleBtn.addEventListener('click', toggleMusic);
             
             // --- FIM Lógica de Áudio ---

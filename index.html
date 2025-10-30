@@ -504,6 +504,7 @@
             width: 90%; /* Ocupa 90% no carrossel mobile */
             max-width: 320px; /* Largura máxima para card no carrossel */
             scroll-snap-align: start; /* Alinha o card no scroll */
+            display: flex; /* Adicionado para garantir o flex */
         }
         
         /* Ajuste do width e flex-grow para Grade (para que o item ocupe a largura total da UL) */
@@ -645,7 +646,7 @@
             left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
             font-size: 3.5rem;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
             text-shadow: 0 0 15px rgba(0,0,0,0.7);
@@ -664,7 +665,7 @@
             width: 100%;
             padding: 0.8rem 1rem;
             background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             font-size: 0.9rem;
             font-weight: 700;
             transition: opacity 0.3s ease;
@@ -959,7 +960,7 @@
         .preview-avatar {
             width: 35px;
             height: 35px;
-            background: var(--red);
+            background: var(--accent-color); /* Alterado para var(--accent-color) */
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -967,15 +968,20 @@
             font-family: var(--font-heading);
             font-weight: 800;
             font-size: 1.2rem;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             flex-shrink: 0;
         }
 
         .preview-info strong {
             font-family: var(--font-body);
             font-weight: 700;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             font-size: 0.9rem;
+        }
+        
+        .preview-info strong span {
+            color: var(--accent-color);
+            text-transform: lowercase;
         }
 
         .preview-info span {
@@ -986,7 +992,7 @@
 
         .preview-message-bubble {
             background-color: rgba(230, 0, 0, 0.15);
-            border-left: 3px solid var(--red);
+            border-left: 3px solid var(--accent-color); /* Alterado para var(--accent-color) */
             padding: 0.8rem 1rem;
             border-radius: 8px;
             font-size: 0.85rem;
@@ -1037,7 +1043,7 @@
         }
 
         .chatbot-header {
-            background: linear-gradient(135deg, var(--accent-color), #FF4444);
+            background: linear-gradient(135deg, var(--accent-color), #ff4d4d); /* Leve ajuste no gradiente */
             padding: 1.2rem 1.5rem;
             display: flex;
             align-items: center;
@@ -1054,7 +1060,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             flex-shrink: 0;
         }
 
@@ -1063,21 +1069,27 @@
             font-size: 1.3rem;
             letter-spacing: 2px;
             margin-bottom: 0.2rem;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             text-transform: uppercase; /* TAURUS em uppercase */
+        }
+        
+        .chatbot-header-info h3 span {
+            color: #0a0a0a; /* 'bot' em preto no header */
+            text-transform: lowercase;
+            opacity: 0.8;
         }
 
         .chatbot-header-info p {
             font-size: 0.75rem;
             opacity: 0.9;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
         }
 
         .chatbot-close {
             margin-left: auto;
             background: none;
             border: none;
-            color: white;
+            color: var(--text-color); /* Alterado para var(--text-color) */
             font-size: 1.5rem;
             cursor: pointer;
             width: 35px;
@@ -1140,7 +1152,7 @@
             justify-content: center;
             font-size: 1rem;
             flex-shrink: 0;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
         }
 
         .message.bot .message-avatar {
@@ -1170,7 +1182,7 @@
         
         .message.user .message-bubble {
             background-color: var(--accent-color);
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             border-bottom-right-radius: 4px;
         }
 
@@ -1232,7 +1244,7 @@
             border: 1px solid #333;
             border-radius: 20px;
             padding: 0.8rem 1rem;
-            color: var(--white);
+            color: var(--text-color); /* Alterado para var(--text-color) */
             font-family: var(--font-body);
             font-size: 0.9rem;
             outline: none;
@@ -1257,7 +1269,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--text-color); /* Alterado para var(--text-color) */
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -1718,7 +1730,7 @@
                 <div class="chatbot-header-info">
                     <!-- ALTERAÇÃO DE HTML: TAURUS em branco/maiúsculo, bot em vermelho/minúsculo -->
                     <!-- Removido o inline style, pois o CSS da seção agora cuida disso -->
-                    <h3>TAURUS<span style="color: var(--accent-color); text-transform: lowercase;">bot</span></h3>
+                    <h3>TAURUS<span>bot</span></h3>
                     <p>Online</p>
                 </div>
                 <button class="chatbot-close" id="chatbotClose" aria-label="Fechar chat">
@@ -1837,7 +1849,7 @@
                 });
             }
             
-            // --- 4. Lógica do Chatbot Placebo ---
+            // --- 4. LÓGICA DO CHATBOT (AGORA CONECTADO AO BACKEND) ---
             const chatbotButton = document.getElementById('chatbotButton');
             const chatbotWindow = document.getElementById('chatbotWindow');
             const chatbotClose = document.getElementById('chatbotClose');
@@ -1889,7 +1901,7 @@
             if (chatbotClose) chatbotClose.addEventListener('click', toggleChat);
             if (heroCtaButton) heroCtaButton.addEventListener('click', toggleChat); // Botão do Hero também abre o chat
 
-            // --- 4c. Funções do Chat ---
+            // --- 4c. Funções do Chat (Helpers) ---
             
             // Formata a hora atual
             function getCurrentTime() {
@@ -1898,16 +1910,20 @@
             }
 
             // Adiciona mensagem ao chat
+            // ** ATUALIZADO para tratar quebras de linha (Markdown) **
             function addMessage(text, isUser = false) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
                 
+                // Converte quebras de linha \n para <br>
+                const formattedText = text.replace(/\n/g, '<br>');
+
                 messageDiv.innerHTML = `
                     <div class="message-avatar">
                         <i class="fas fa-${isUser ? 'user' : 'robot'}"></i>
                     </div>
                     <div class="message-content">
-                        <div class="message-bubble">${text}</div>
+                        <div class="message-bubble">${formattedText}</div>
                         <div class="message-time">${getCurrentTime()}</div>
                     </div>
                 `;
@@ -1922,6 +1938,7 @@
             function showTypingIndicator() {
                 const typingDiv = document.createElement('div');
                 typingDiv.className = 'message bot typing-message';
+                typingDiv.id = 'typing-indicator'; // Adiciona ID para remoção
                 typingDiv.innerHTML = `
                     <div class="message-avatar">
                         <i class="fas fa-robot"></i>
@@ -1940,65 +1957,67 @@
                     chatbotMessages.appendChild(typingDiv);
                     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
                 }
-                return typingDiv;
+                // Não retorna mais o div, usamos o ID
             }
 
             // Remove indicador de "digitando"
-            function removeTypingIndicator(typingDiv) {
+            function removeTypingIndicator() {
+                const typingDiv = document.getElementById('typing-indicator');
                 if (typingDiv && typingDiv.parentNode) {
                     typingDiv.parentNode.removeChild(typingDiv);
                 }
             }
 
-            // Respostas "Placebo" do Bot
-            const botResponses = {
-                'agenda': 'Confira os próximos shows na seção Agenda! 🎤 Tem shows incríveis chegando em São Paulo, Rio e Salvador.',
-                'show': 'Os próximos shows são: Festival de Verão (30/11 - SP), Noite do TAURUS (12/12 - RJ) e Show de Encerramento (18/12 - Salvador). Qual te interessa?',
-                'taurus': 'TAURUS é mais que um álbum, é um movimento! 🔥 O TAURUSbot tá aqui pra te manter atualizado sobre tudo.',
-                'duquesa': 'Duquesa é a dona da parada! 👑 Rapper, compositora e referência no rap brasileiro. Quer saber mais sobre ela?',
-                'oi': 'E aí! 🔥 Seja bem-vindo! Quer saber sobre a agenda de shows, músicas ou curiosidades sobre a Duquesa?',
-                'olá': 'Olá! 👋 Como posso te ajudar hoje? Posso falar sobre shows, músicas ou qualquer coisa do universo TAURUS!',
-                'música': 'As músicas do TAURUS são fogo! 🎵 Qual sua favorita? Quer que eu te conte sobre alguma específica?',
-                'default': 'Entendido! Essa é uma ótima pergunta. No momento, estou em modo de testes, mas em breve minha API será conectada e poderei te dar todas as informações sobre a Duquesa e o universo TAURUS! 🔥'
-            };
-
-            // Pega uma resposta do bot
-            function getBotResponse(userMessage) {
-                const message = userMessage.toLowerCase();
-                
-                for (let key in botResponses) {
-                    if (message.includes(key)) {
-                        return botResponses[key];
-                    }
-                }
-                
-                return botResponses.default;
-            }
-
-            // Função principal para enviar mensagem
-            function sendMessage() {
+            // --- 4d. Função Principal de Envio (CONECTADA AO BACKEND) ---
+            
+            async function sendMessage() {
                 if (!chatbotInput) return;
                 const message = chatbotInput.value.trim();
                 
                 if (message === '') return;
                 
-                addMessage(message, true);
+                addMessage(message, true); // Mostra a msg do usuário
                 chatbotInput.value = '';
                 
-                const typingIndicator = showTypingIndicator();
-                
-                // Simula o tempo de resposta do bot
-                setTimeout(() => {
-                    removeTypingIndicator(typingIndicator);
-                    const response = getBotResponse(message);
-                    addMessage(response, false);
-                }, 1000 + Math.random() * 800);
+                showTypingIndicator(); // Mostra "digitando..."
+                chatbotSend.disabled = true; // Desabilita o botão
+
+                try {
+                    // --- Conexão Real com o Backend ---
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message }),
+                    });
+                    // --- Fim da Conexão ---
+
+                    removeTypingIndicator(); // Remove "digitando..."
+                    const data = await response.json();
+
+                    if (response.ok && data.reply) {
+                        addMessage(data.reply, false); // Mostra a resposta do bot (vinda do Python)
+                    } else {
+                        addMessage(data.error || 'Opa, não consegui processar agora, fã. Tenta de novo.', false);
+                        console.error("Erro da API /api/chat:", data.error || "Resposta inválida");
+                    }
+
+                } catch (error) {
+                    removeTypingIndicator();
+                    addMessage('Erro de conexão com o bot. 🔌 Tenta de novo aí.', false);
+                    console.error("Erro de rede ao chamar /api/chat:", error);
+                } finally {
+                     chatbotSend.disabled = false; // Reabilita o botão
+                     chatbotInput.focus(); // Foca no input novamente
+                }
             }
 
             // Event Listeners para enviar
             if (chatbotSend) chatbotSend.addEventListener('click', sendMessage);
             if (chatbotInput) chatbotInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
+                    e.preventDefault(); // Impede a quebra de linha no Enter
                     sendMessage();
                 }
             });
@@ -2087,9 +2106,9 @@
                 shuffledQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, totalQuestions);
                 
                 // Mostra a tela de pergunta e esconde as outras
-                quizStartScreen.classList.remove('active');
-                quizResultsScreen.classList.remove('active');
-                quizQuestionScreen.classList.add('active');
+                if(quizStartScreen) quizStartScreen.classList.remove('active');
+                if(quizResultsScreen) quizResultsScreen.classList.remove('active');
+                if(quizQuestionScreen) quizQuestionScreen.classList.add('active');
                 
                 showQuestion();
             }
@@ -2098,8 +2117,8 @@
                 resetQuestionState();
                 const question = shuffledQuestions[currentQuestionIndex];
                 
-                quizProgress.textContent = `Pergunta ${currentQuestionIndex + 1} de ${totalQuestions}`;
-                quizQuestionText.textContent = question.quote;
+                if(quizProgress) quizProgress.textContent = `Pergunta ${currentQuestionIndex + 1} de ${totalQuestions}`;
+                if(quizQuestionText) quizQuestionText.textContent = question.quote;
                 
                 // Gera 5 opções, incluindo a resposta correta
                 const options = generateOptions(question.song);
@@ -2109,7 +2128,7 @@
                     button.classList.add('option-btn');
                     button.textContent = option;
                     button.addEventListener('click', () => selectAnswer(option, question.song));
-                    quizOptionsContainer.appendChild(button);
+                    if(quizOptionsContainer) quizOptionsContainer.appendChild(button);
                 });
             }
             
@@ -2132,46 +2151,56 @@
             }
 
             function resetQuestionState() {
-                quizOptionsContainer.innerHTML = '';
-                quizFeedback.textContent = '';
-                quizFeedback.style.display = 'none';
-                quizNextBtn.style.display = 'none';
+                if(quizOptionsContainer) quizOptionsContainer.innerHTML = '';
+                if(quizFeedback) {
+                    quizFeedback.textContent = '';
+                    quizFeedback.style.display = 'none';
+                }
+                if(quizNextBtn) quizNextBtn.style.display = 'none';
             }
 
             function selectAnswer(selectedOption, correctOption) {
                 // Desabilita todos os botões
-                Array.from(quizOptionsContainer.children).forEach(btn => {
-                    btn.disabled = true;
-                });
+                if(quizOptionsContainer) {
+                    Array.from(quizOptionsContainer.children).forEach(btn => {
+                        btn.disabled = true;
+                    });
+                }
                 
                 if (selectedOption === correctOption) {
                     score++;
-                    quizFeedback.textContent = "Acertou! 🔥";
-                    quizFeedback.className = 'correct';
+                    if(quizFeedback) {
+                        quizFeedback.textContent = "Acertou! 🔥";
+                        quizFeedback.className = 'correct';
+                    }
                 } else {
-                    quizFeedback.textContent = `Erro! A resposta era "${correctOption}".`;
-                    quizFeedback.className = 'wrong';
+                    if(quizFeedback) {
+                        quizFeedback.textContent = `Erro! A resposta era "${correctOption}".`;
+                        quizFeedback.className = 'wrong';
+                    }
                 }
                 
-                quizFeedback.style.display = 'block';
+                if(quizFeedback) quizFeedback.style.display = 'block';
                 
                 // Mostra qual era a correta e a errada
-                Array.from(quizOptionsContainer.children).forEach(btn => {
-                    if (btn.textContent === correctOption) {
-                        btn.classList.add('correct');
-                    } else if (btn.textContent === selectedOption) {
-                        btn.classList.add('wrong');
-                    }
-                });
+                if(quizOptionsContainer) {
+                    Array.from(quizOptionsContainer.children).forEach(btn => {
+                        if (btn.textContent === correctOption) {
+                            btn.classList.add('correct');
+                        } else if (btn.textContent === selectedOption) {
+                            btn.classList.add('wrong');
+                        }
+                    });
+                }
                 
                 // Mostra o botão "Próxima"
-                quizNextBtn.style.display = 'inline-block';
+                if(quizNextBtn) quizNextBtn.style.display = 'inline-block';
             }
 
             function showResults() {
-                quizQuestionScreen.classList.remove('active');
-                quizResultsScreen.classList.add('active');
-                quizScoreEl.textContent = `${score} / ${totalQuestions}`;
+                if(quizQuestionScreen) quizQuestionScreen.classList.remove('active');
+                if(quizResultsScreen) quizResultsScreen.classList.add('active');
+                if(quizScoreEl) quizScoreEl.textContent = `${score} / ${totalQuestions}`;
             }
 
         });
